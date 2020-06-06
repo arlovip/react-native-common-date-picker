@@ -1,0 +1,34 @@
+{
+  "name": "react-native-common-date-picker",
+  "version": "1.0.0",
+  "description": "An awesome and cross-platform React Native date picker and calendar component for iOS and Android",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lchenfox/react-native-common-date-picker.git"
+  },
+  "keywords": [
+    "react-native",
+    "date",
+    "date-picker",
+    "calendar",
+    "react-native-date-picker",
+    "react-native-common-date-picker",
+    "date",
+    "components",
+    "datepicker",
+    "calendars",
+    "rn",
+    "date",
+    "picker"
+  ],
+  "author": "chenlong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lchenfox/react-native-common-date-picker/issues"
+  },
+  "homepage": "https://github.com/lchenfox/react-native-common-date-picker#readme"
+}
