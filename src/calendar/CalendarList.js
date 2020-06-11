@@ -15,15 +15,18 @@ class CalendarList extends Component {
     };
 
     componentDidMount() {
-        const {
-            minDate,
-            maxDate,
-            firstDayOnWeeks,
-        } = this.props;
+        const {minDate, maxDate, firstDayOnWeeks} = this.props;
         this.setState({
-            dataSource: Constants.getDates(minDate, maxDate, firstDayOnWeeks),
+            dataSource: Constants.getDates(this._getDate(minDate), this._getDate(maxDate), firstDayOnWeeks),
         });
     }
+
+    _getDate = date => {
+        if (date instanceof Date) {
+            return date.toISOString().slice(0, 10);
+        }
+        return date.replace(/\//g, '-');
+    };
 
     /**
      * Select date call back with date parameter.
@@ -70,11 +73,12 @@ class CalendarList extends Component {
             arrowSize,
         } = this.props;
         return <ListItem
+            {...this.props}
             item={item}
             startDate={this.state.startDate}
             endDate={this.state.endDate}
-            minDate={minDate.replace(/\//g, '-')}
-            maxDate={maxDate.replace(/\//g, '-')}
+            minDate={this._getDate(minDate)}
+            maxDate={this._getDate(maxDate)}
             selectDate={this._selectDate}
             headerTitleType={headerTitleType}
             listItemStyle={listItemStyle}
@@ -117,7 +121,6 @@ class CalendarList extends Component {
             arrowColor={arrowColor}
             arrowSize={arrowSize}
             arrowAlign={arrowAlign}
-            {...this.props}
         />;
     };
 
@@ -333,13 +336,21 @@ CalendarList.propTypes = {
 
     /**
      * Min date to limit, default is "2015-01-01". Other supported formats: "2015-1-1", "2015/01/01", "2015/1/1".
+     * Note: Date type is also supported.
      */
-    minDate: PropTypes.string,
+    minDate: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.instanceOf(Date),
+    ]),
 
     /**
      * Max date to limit, default is today calculated by new Date(). Other supported formats: "2015-1-1", "2015/01/01", "2015/1/1".
+     * Note: Date type is also supported.
      */
-    maxDate: PropTypes.string,
+    maxDate: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.instanceOf(Date),
+    ]),
 
     /**
      * Whether to show weeks, default is true.

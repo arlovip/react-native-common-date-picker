@@ -48,12 +48,14 @@ import {CalendarList} from "react-native-common-date-picker";
               this.setState({
                    selectedDate1: data[0],
                    selectedDate2: data[1],
-                   visible0: false,
+                   visible: false,
               });
           }}
      />
 </Modal>
 ```
+
+More examples: [example directory](https://github.com/lchenfox/react-native-common-date-picker/tree/master/src/example)
 
 ## <span id="Parameters">Parameters</span>
 
