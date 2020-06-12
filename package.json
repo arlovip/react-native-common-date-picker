@@ -1,6 +1,6 @@
 {
   "name": "react-native-common-date-picker",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "An awesome and cross-platform React Native date picker and calendar component for iOS and Android",
   "main": "index.js",
   "scripts": {
