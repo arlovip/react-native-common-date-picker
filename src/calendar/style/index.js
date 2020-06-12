@@ -3,13 +3,15 @@ import {StyleSheet, Dimensions} from 'react-native';
 export const toolBarStyles = StyleSheet.create({
     view: {
         flexDirection: 'row',
-        paddingTop: 2,
+        paddingTop: 8,
         paddingBottom: 8,
         justifyContent: 'space-between',
         alignItems: 'center',
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
         backgroundColor: 'white',
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#d3d3d3',
     },
     title: {
         fontSize: 17,

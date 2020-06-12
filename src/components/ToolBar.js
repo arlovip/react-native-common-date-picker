@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, TouchableOpacity, Text} from 'react-native';
 import PropTypes from 'prop-types';
-import {toolBarStyles} from "../style";
+import {toolBarStyles} from "../calendar/style";
 
 const ToolBar = (
     {

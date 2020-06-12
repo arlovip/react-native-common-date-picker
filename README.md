@@ -1,12 +1,22 @@
 # react-native-common-date-picker
 
-An awesome and cross-platform React Native date picker and calendar component for iOS and Android. Now just calendar component is supported. Date picker will be supported soon. 
+An awesome and cross-platform React Native date picker and calendar component for iOS and Android. 
 
 This package is designed to integrade common date components like `calendars`, `date`, `date-time`, etc. Next, we are gonna provide more optional parameters and styles for developers who like this package. We hope to make it high-performance and high-efficiency in the future.
 
 If you like it, just give stars ⭐️⭐️⭐️. If you come to any problems with this repository, please feel free to submit issues. Any PR is welcome.
 
-**Screenshots**
+**Date Picker Screenshots**
+
+|   Android 1 | Android 2  | Android 3  | Android 4  |                                                                                                                          
+| ----------- | ------------ | -------------- | ---- |
+| ![Android 1.png](https://i.loli.net/2020/06/12/BcqVmEsYAlSdRvz.png)    | ![Android 2.png](https://i.loli.net/2020/06/12/4L86ouwz1PNrdIG.png)  | ![Android 3.png](https://i.loli.net/2020/06/12/KSGh74QTdDn9wlH.png) | ![Android 4.png](https://i.loli.net/2020/06/12/k3NbBnzmRQ65ZJS.png)
+
+|   iOS 1 | iOS 2  | iOS 3  | iOS 4  |                                                                                                                          
+| ----------- | ------------ | -------------- | ---- |
+| ![iOS 1.png](https://i.loli.net/2020/06/12/nvd24jc1zGrAhLW.png)    | ![iOS 2.png](https://i.loli.net/2020/06/12/DgLFt79Uz38P2hv.png)  | ![iOS 3.png](https://i.loli.net/2020/06/12/wehKmGE3s5aoWtJ.png) | ![iOS 4.png](https://i.loli.net/2020/06/12/T5QjBLpYH7lNrUm.png)
+
+**Calendar Screenshots**
 
 |   Android 1 | Android 2  | Android 3  | Android 4  |                                                                                                                          
 | ----------- | ------------ | -------------- | ---- |
@@ -16,7 +26,11 @@ If you like it, just give stars ⭐️⭐️⭐️. If you come to any problems 
 | ----------- | ------------ | -------------- | ---- |
 | ![iOS1.png](https://i.loli.net/2020/06/06/LwEa476VAQ8kgTC.png)    | ![iOS2.png](https://i.loli.net/2020/06/06/K6h21JlyTspo7gq.png)  | ![iOS3.png](https://i.loli.net/2020/06/06/Pw1DnIkMjtve5NC.png) | ![iOS4.png](https://i.loli.net/2020/06/06/nUuI1bSxayiTkZe.png)
 
-**GIF**
+**Date Picker GIF**
+
+![date_picker.gif](https://i.loli.net/2020/06/12/vsON5j6iqLdQplC.gif)
+
+**Calendar GIF**
 
 ![calendar-demo.gif](https://i.loli.net/2020/06/06/MDSbeP3gd7EyuNO.gif)
 
@@ -36,6 +50,20 @@ npm install react-native-common-date-picker
 ```
 
 ## <span id="Usage">Usage</span>
+
+#### Date Picker
+
+```
+import {DatePicker} from "react-native-common-date-picker";
+
+<DatePicker
+    confirm={date => {
+        console.warn(date)
+    }}
+/>
+```
+
+#### Calendar
 
 ```
 import {CalendarList} from "react-native-common-date-picker";
@@ -105,8 +133,8 @@ More examples: [example directory](https://github.com/lchenfox/react-native-comm
 
 ## <span id="To_do">To do</span>
 
-- Date picker is supported
 - Modal is supported by default
+- Add: datetime, time
 
 ## License
 

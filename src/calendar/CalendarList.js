@@ -3,7 +3,7 @@ import {FlatList, View} from 'react-native';
 import PropTypes from 'prop-types';
 import * as Constants from "../contants";
 import WeekBar from "./components/WeekBar";
-import ToolBar from "./components/ToolBar";
+import ToolBar from "../components/ToolBar";
 import ListItem from "./components/ListItem";
 
 class CalendarList extends Component {
@@ -17,16 +17,9 @@ class CalendarList extends Component {
     componentDidMount() {
         const {minDate, maxDate, firstDayOnWeeks} = this.props;
         this.setState({
-            dataSource: Constants.getDates(this._getDate(minDate), this._getDate(maxDate), firstDayOnWeeks),
+            dataSource: Constants.getCalendarDates(Constants.validateDate(minDate), Constants.validateDate(maxDate), firstDayOnWeeks),
         });
     }
-
-    _getDate = date => {
-        if (date instanceof Date) {
-            return date.toISOString().slice(0, 10);
-        }
-        return date.replace(/\//g, '-');
-    };
 
     /**
      * Select date call back with date parameter.
@@ -42,7 +35,7 @@ class CalendarList extends Component {
             return;
         }
         if (startDate) {
-            const isBigger = Constants.compareDatesWith(startDate, date);
+            const isBigger = Constants.greaterThan(startDate, date);
             this.setState({
                 startDate: isBigger ? date : startDate,
                 endDate: isBigger ? startDate : date,
@@ -51,7 +44,7 @@ class CalendarList extends Component {
             this.setState({startDate: date});
         }
         const {onPressDate} = this.props;
-        onPressDate && typeof onPressDate === 'function' && onPressDate(Constants.toStandardDateString(date), index);
+        onPressDate && typeof onPressDate === 'function' && onPressDate(Constants.toStandardStringWith(date), index);
     };
 
     _renderItem = ({item, index}) => {
@@ -77,8 +70,8 @@ class CalendarList extends Component {
             item={item}
             startDate={this.state.startDate}
             endDate={this.state.endDate}
-            minDate={this._getDate(minDate)}
-            maxDate={this._getDate(maxDate)}
+            minDate={Constants.validateDate(minDate)}
+            maxDate={Constants.validateDate(maxDate)}
             selectDate={this._selectDate}
             headerTitleType={headerTitleType}
             listItemStyle={listItemStyle}
@@ -179,12 +172,10 @@ class CalendarList extends Component {
             titleStyle={titleStyle}
             titleText={titleText}
             cancelText={cancelText}
-            cancel={() => {
-                cancel && typeof cancel === 'function' && cancel();
-            }}
+            cancel={() => cancel && typeof cancel === 'function' && cancel()}
             confirm={() => {
                 const {startDate, endDate} = this.state;
-                const dates = [Constants.toStandardDateString(startDate), Constants.toStandardDateString(endDate)];
+                const dates = [Constants.toStandardStringWith(startDate), Constants.toStandardStringWith(endDate)];
                 confirm && typeof confirm === 'function' && confirm(dates);
             }}
             confirmText={confirmText}

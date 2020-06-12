@@ -22,7 +22,7 @@ class ListItem extends React.Component {
 
     _needSelectedRangeBgColor = (startDate, endDate, currentDate) => {
         if (!startDate || !endDate) return false;
-        return !!(Constants.compareDatesWith(currentDate, startDate) && Constants.compareDatesWith(endDate, currentDate));
+        return !!(Constants.greaterThan(currentDate, startDate) && Constants.greaterThan(endDate, currentDate));
     };
 
     _getMarkTypeStyles = (currentDate, days) => {
@@ -146,7 +146,7 @@ class ListItem extends React.Component {
 
         const disabledDayStyle = {};
         let disabled = false;
-        if (Constants.compareDatesWith(minDate, currentDate) || Constants.compareDatesWith(currentDate, maxDate)) {
+        if (Constants.greaterThan(minDate, currentDate) || Constants.greaterThan(currentDate, maxDate)) {
             disabledDayStyle.color = beyondDatesDisabledTextColor;
             disabled = beyondDatesDisabled;
         }
