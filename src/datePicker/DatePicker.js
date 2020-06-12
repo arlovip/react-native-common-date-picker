@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import DatePickerList from "./components/DatePickerList";
 import PropTypes from "prop-types";
 import ToolBar from "../components/ToolBar";
@@ -153,10 +153,6 @@ class DatePicker extends Component {
 
         return (
             <>
-                <Text style={{margin: 5, padding: 5, backgroundColor: 'black', color: 'white', fontSize: 18}}>
-                    Selected date
-                    is: {Constants.toStandardStringWith(`${selectedYear}-${selectedMonth}-${selectedDay}`, monthDisplayMode)}
-                </Text>
                 {showToolBar && toolBarPosition === Constants.DEFAULT_TOOL_BAR_POSITION.TOP && _toolBar}
                 <View style={{flexDirection: 'row', backgroundColor, justifyContent: 'center'}}>
                     {

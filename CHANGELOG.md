@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.1（June 12, 2020）
+
+- Delete test component in DatePicker
+
 ## 2.0.0（June 12, 2020）
 
 - Date Picker is supported
