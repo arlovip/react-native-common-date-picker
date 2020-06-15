@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
-import DatePickerList from "./components/DatePickerList";
+import DatePickerList from "./DatePickerList";
 import PropTypes from "prop-types";
 import ToolBar from "../components/ToolBar";
 import * as Constants from "../contants/index";
@@ -134,7 +134,7 @@ class DatePicker extends Component {
         const dataSource = Constants.getDatePickerDataSource(type, years, months, days);
 
         const _toolBar = (<ToolBar
-            style={toolBarStyle}
+            style={[{backgroundColor}, toolBarStyle]}
             cancelStyle={toolBarCancelStyle}
             confirmStyle={toolBarConfirmStyle}
             titleStyle={titleStyle}
@@ -171,8 +171,8 @@ class DatePicker extends Component {
                                 rows={rows}
                                 rowHeight={rowHeight}
                                 onValueChange={selectedIndex => this._onValueChange(key, selectedIndex)}
-                                selectedRowBackgroundColor={selectedRowBackgroundColor}
-                                unselectedRowBackgroundColor={unselectedRowBackgroundColor}
+                                selectedRowBackgroundColor={selectedRowBackgroundColor || backgroundColor}
+                                unselectedRowBackgroundColor={unselectedRowBackgroundColor || backgroundColor}
                                 selectedBorderLineColor={selectedBorderLineColor}
                                 selectedBorderLineWidth={selectedBorderLineWidth}
                                 selectedBorderLineMarginHorizontal={selectedBorderLineMarginHorizontal}
@@ -249,49 +249,49 @@ DatePicker.propTypes = {
     toolBarPosition: PropTypes.oneOf(['top', 'bottom']),
 
     /**
-     * tool bar view styles, passed like {backgroundColor: 'red'} as you like.
+     * Tool bar view styles, passed like {backgroundColor: 'red'} as you like.
      */
     toolBarStyle: PropTypes.object,
 
     /**
-     * tool bar cancel button text styles, passed like {color: 'red', fontSize: 15} as you like.
+     * Tool bar cancel button text styles, passed like {color: 'red', fontSize: 15} as you like.
      * Note that you can control the active opacity of the button through {activeOpacity: 1}.
      */
     toolBarCancelStyle: PropTypes.object,
 
     /**
-     * tool bar confirm button text styles, passed like {color: 'red', fontSize: 15} as you like.
+     * Tool bar confirm button text styles, passed like {color: 'red', fontSize: 15} as you like.
      * Note that you can control the active opacity of the button through {activeOpacity: 1}.
      */
     toolBarConfirmStyle: PropTypes.object,
 
     /**
-     * tool bar title text style.
+     * Tool bar title text style.
      */
     titleStyle: PropTypes.object,
 
     /**
-     * tool bar title text, default is "".
+     * Tool bar title text, default is "".
      */
     titleText: PropTypes.string,
 
     /**
-     * tool bar cancel button text, default is "Cancel".
+     * Tool bar cancel button text, default is "Cancel".
      */
     cancelText: PropTypes.string,
 
     /**
-     * tool bar confirm button text, default is "Confirm".
+     * Tool bar confirm button text, default is "Confirm".
      */
     confirmText: PropTypes.string,
 
     /**
-     * tool bar cancel button callback.
+     * Tool bar cancel button callback.
      */
     cancel: PropTypes.func,
 
     /**
-     * tool bar confirm button callback with a date string like "2020-06-10".
+     * Tool bar confirm button callback with a date string like "2020-06-10".
      */
     confirm: PropTypes.func,
 
@@ -336,7 +336,7 @@ DatePicker.propTypes = {
     selectedBorderLineColor: PropTypes.string,
 
     /**
-     * Border line width for the selected row. Default is 0.5. string and number type are supported. E.g: selectedTextFontSize={20} or selectedTextFontSize={'20'}.
+     * Border line width for the selected row. Default is 0.5. string and number type are supported. E.g: selectedBorderLineWidth={20} or selectedBorderLineWidth={'20'}.
      */
     selectedBorderLineWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
@@ -399,8 +399,8 @@ DatePicker.defaultProps = {
     width: Constants.SCREEN_WIDTH,
     rows: ROWS,
     rowHeight: ROW_HEIGHT,
-    selectedRowBackgroundColor: 'white',
-    unselectedRowBackgroundColor: 'white',
+    selectedRowBackgroundColor: '',
+    unselectedRowBackgroundColor: '',
     selectedBorderLineColor: '#d3d3d3',
     selectedBorderLineWidth: 0.5,
     selectedBorderLineMarginHorizontal: 0,

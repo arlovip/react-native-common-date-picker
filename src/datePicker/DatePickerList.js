@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {BORDER_LINE_POSITION, DATE_KEY_TYPE} from '../../contants'
+import {BORDER_LINE_POSITION, DATE_KEY_TYPE} from '../contants'
 
 class DatePickerList extends Component {
 

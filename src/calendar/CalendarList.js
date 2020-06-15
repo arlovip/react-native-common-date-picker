@@ -243,12 +243,12 @@ CalendarList.propTypes = {
     /**
      * Styles for container, you can set it as any view prop styles such as {backgroundColor: 'red'}
      */
-    containerStyle: PropTypes.any,
+    containerStyle: PropTypes.object,
 
     /**
      * Styles for scroll list - FlatList, you can set it as any view prop styles such as {backgroundColor: 'red'}
      */
-    scrollContentStyle: PropTypes.any,
+    scrollContentStyle: PropTypes.object,
 
     /**
      * Whether to show tool bar, default is true. If false, hide tool bar on top.
@@ -264,24 +264,24 @@ CalendarList.propTypes = {
     /**
      * tool bar view styles, passed like {backgroundColor: 'red'} as you like.
      */
-    toolBarStyle: PropTypes.any,
+    toolBarStyle: PropTypes.object,
 
     /**
      * tool bar cancel button text styles, passed like {color: 'red', fontSize: 15} as you like.
      * Note that you can control the active opacity of the button through {activeOpacity: 1}.
      */
-    toolBarCancelStyle: PropTypes.any,
+    toolBarCancelStyle: PropTypes.object,
 
     /**
      * tool bar confirm button text styles, passed like {color: 'red', fontSize: 15} as you like.
      * Note that you can control the active opacity of the button through {activeOpacity: 1}.
      */
-    toolBarConfirmStyle: PropTypes.any,
+    toolBarConfirmStyle: PropTypes.object,
 
     /**
      * tool bar title text style.
      */
-    titleStyle: PropTypes.any,
+    titleStyle: PropTypes.object,
 
     /**
      * tool bar title text, default is "".
@@ -372,12 +372,12 @@ CalendarList.propTypes = {
     /**
      * For week days, set the container styles like {backgroundColor: 'red'}.
      */
-    weeksStyle: PropTypes.any,
+    weeksStyle: PropTypes.object,
 
     /**
      * For week days, set the week day text styles like {color: 'blue', fontSize: 14}.
      */
-    weeksTextStyle: PropTypes.any,
+    weeksTextStyle: PropTypes.object,
 
     /**
      * Display form of the header title. Default is 0. Take "2020-04" date as an example:
@@ -412,7 +412,7 @@ CalendarList.propTypes = {
         },
      };
      */
-    listItemStyle: PropTypes.any,
+    listItemStyle: PropTypes.object,
 
     /**
      * Selected date mark type. Default is 'ellipse', other choices: 'semiellipse'、'rectangle'、'circle'、 'square'、'dot'.

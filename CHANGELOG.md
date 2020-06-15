@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.0.2（June 15, 2020）
+
+- Update README.md
+- Fix backgroundColor parameter setting
+
 ## 2.0.1（June 12, 2020）
 
 - Delete test component in DatePicker
