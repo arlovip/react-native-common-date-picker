@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.3（June 16, 2020）
+
+- Fix bug: offsetY<0 when scrolling to top on Android
+
 ## 2.0.2（June 15, 2020）
 
 - Update README.md

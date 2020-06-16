@@ -168,7 +168,9 @@ class DatePickerList extends Component {
         if (this.state.isScrolling) return;
         // Fix conflict between "onScrollEndDrag" and "onMomentumScrollEnd".
         this.setState({isScrolling: true}, () => {
-            const index = Math.round(contentOffset.y / (this.state.rowHeight));
+            // Fix: offset < 0 on Android
+            const offsetY = contentOffset.y < 0 ? 0 : contentOffset.y;
+            const index = Math.round(offsetY / (this.state.rowHeight));
             this.flatList.scrollToIndex({index: index, animated: false});
             this._onValueChange(index);
             this.scrollTimer = setTimeout(() => {
@@ -184,7 +186,8 @@ class DatePickerList extends Component {
         const {data, rowHeight, initialRow} = this.state;
         const maxOffsetHeight = (data.length - rows) * rowHeight;
         if (offsetY <= 0) {
-            this.setState({selectedIndex: initialRow})
+            this.setState({selectedIndex: initialRow});
+            return true; // Fix: offset < 0 on Android
         } else if (offsetY >= maxOffsetHeight) {
             this.setState({selectedIndex: data.length - 1 - initialRow})
         }
@@ -258,6 +261,7 @@ class DatePickerList extends Component {
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                     scrollsToTop={false}
+                    bounces={false} // Compatible with android
                 />
             </View>
         );
