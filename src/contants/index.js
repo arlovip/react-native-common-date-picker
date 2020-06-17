@@ -510,11 +510,11 @@ export function toStandardStringWith(date: string, monthDisplayMode: string = ''
     let day = dates[2];
     let month = dates[1];
     if (monthDisplayMode === MONTH_DISPLAY_MODE.EN_SHORT) {
-        month = DEFAULT_MONTH_SHORT.indexOf(month) >= 0 ? (DEFAULT_MONTH_SHORT.indexOf(month) + 1).toString() : '';
+        month = DEFAULT_MONTH_SHORT.indexOf(month) >= 0 ? (DEFAULT_MONTH_SHORT.indexOf(month) + 1).toString() : month;
     }
 
     if (monthDisplayMode === MONTH_DISPLAY_MODE.EN_LONG) {
-        month = DEFAULT_MONTH_LONG.indexOf(month) >= 0 ? (DEFAULT_MONTH_LONG.indexOf(month) + 1).toString() : '';
+        month = DEFAULT_MONTH_LONG.indexOf(month) >= 0 ? (DEFAULT_MONTH_LONG.indexOf(month) + 1).toString() : month;
     }
 
     year = year.length ? (year + (month.length ? '-' : '')) : '';

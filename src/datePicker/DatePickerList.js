@@ -52,6 +52,7 @@ class DatePickerList extends Component {
             selectedBorderLineMarginHorizontal: +selectedBorderLineMarginHorizontal,
             textMarginHorizontal: +textMarginHorizontal,
         };
+        this.updating = false;
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -67,8 +68,12 @@ class DatePickerList extends Component {
                     toIndex = data.length - 1 - initialRow * 2;
                 }
                 if (!this.props.isFirst) {
+                    this.updating = true;
                     this._onValueChange(toIndex);
+                    this.setState({selectedIndex: toIndex + initialRow});
                     this.flatList.scrollToIndex({index: toIndex, animated: false});
+                    this._removeUpdatingTimer();
+                    this.updatingTimer = setTimeout(() => this.updating = false, 200);
                 }
             });
         }
@@ -89,7 +94,7 @@ class DatePickerList extends Component {
 
     componentWillUnmount() {
         this._removeTimer();
-        this._removeScrollTimer();
+        this._removeUpdatingTimer();
     }
 
     _itemTextStyle = index => {
@@ -108,11 +113,11 @@ class DatePickerList extends Component {
         }
         style.color = unselectedTextColor;
         if (index === selectedIndex - 1 || index === selectedIndex + 1) {
-            style.fontSize = +selectedTextFontSize - 5;
+            style.fontSize = +selectedTextFontSize - 3;
         } else if (index === selectedIndex - 2 || index === selectedIndex + 2) {
-            style.fontSize = +selectedTextFontSize - 8;
+            style.fontSize = +selectedTextFontSize - 6;
         } else {
-            style.fontSize = +selectedTextFontSize - 11;
+            style.fontSize = +selectedTextFontSize - 8;
         }
         return style;
     };
@@ -165,39 +170,25 @@ class DatePickerList extends Component {
     };
 
     _scrollToSelectedDate = ({contentOffset}) => {
-        if (this.state.isScrolling) return;
-        // Fix conflict between "onScrollEndDrag" and "onMomentumScrollEnd".
-        this.setState({isScrolling: true}, () => {
-            // Fix: offset < 0 on Android
-            const offsetY = contentOffset.y < 0 ? 0 : contentOffset.y;
-            const index = Math.round(offsetY / (this.state.rowHeight));
-            this.flatList.scrollToIndex({index: index, animated: false});
-            this._onValueChange(index);
-            this.scrollTimer = setTimeout(() => {
-                this.state.isScrolling = false;
-                this._removeScrollTimer();
-            }, 300);
-        });
-    };
-
-    _needToScroll = ({contentOffset}) => {
-        const offsetY = contentOffset.y;
+        let offsetY = contentOffset.y;
         const {rows} = this.props;
         const {data, rowHeight, initialRow} = this.state;
         const maxOffsetHeight = (data.length - rows) * rowHeight;
         if (offsetY <= 0) {
             this.setState({selectedIndex: initialRow});
-            return true; // Fix: offset < 0 on Android
+            offsetY = 0;
         } else if (offsetY >= maxOffsetHeight) {
+            offsetY = maxOffsetHeight;
             this.setState({selectedIndex: data.length - 1 - initialRow})
         }
-        return offsetY >= 0 && offsetY <= maxOffsetHeight;
+        const index = Math.round(offsetY / (this.state.rowHeight));
+        this.flatList.scrollToIndex({index: index, animated: false});
+        this._onValueChange(index);
     };
 
-    _onMomentumScrollEnd = ({nativeEvent}) => this._needToScroll(nativeEvent) && this._scrollToSelectedDate(nativeEvent);
+    _onMomentumScrollEnd = ({nativeEvent}) => this._scrollToSelectedDate(nativeEvent);
 
     _onScrollEndDrag = ({nativeEvent}) => {
-        if (!this._needToScroll(nativeEvent)) return;
         this._removeTimer();
         /**
          * When user is scrolling the scroll view fast, this method will be executed first. After this method is executed,
@@ -207,16 +198,16 @@ class DatePickerList extends Component {
         this.timer = setTimeout(() => {
             this._scrollToSelectedDate(nativeEvent);
             this._removeTimer();
-        }, 300);
+        }, 150);
     };
 
     _removeTimer = () => this.timer && clearTimeout(this.timer);
-    _removeScrollTimer = () => this.scrollTimer && clearTimeout(this.scrollTimer);
+    _removeUpdatingTimer = () => this.updatingTimer && clearTimeout(this.updatingTimer);
 
     _onViewableItemsChanged = ({viewableItems, changed}) => {
         this._removeTimer();
         const {initialRow} = this.state;
-        if (viewableItems.length >= initialRow && viewableItems[initialRow] && viewableItems[initialRow].index >= 0) {
+        if (viewableItems.length >= initialRow && viewableItems[initialRow] && viewableItems[initialRow].index >= 0 && !this.updating) {
             this.setState({selectedIndex: viewableItems[initialRow].index});
         }
     };
@@ -261,7 +252,6 @@ class DatePickerList extends Component {
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                     scrollsToTop={false}
-                    bounces={false} // Compatible with android
                 />
             </View>
         );
