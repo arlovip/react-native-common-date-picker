@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.1.1（June 18, 2020）
+
+- Update README.md
+
 ## 2.1.0（June 18, 2020）
 
 - Optimize business logic 

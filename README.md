@@ -1,5 +1,7 @@
 # react-native-common-date-picker
 
+[![npm version](https://badge.fury.io/js/react-native-common-date-picker.svg)](https://badge.fury.io/js/react-native-common-date-picker) ![MIT](https://img.shields.io/npm/l/react-native-common-date-picker) ![Platform-Android&iOS](https://img.shields.io/badge/platform-Android%26iOS-41BC1D)
+
 An awesome and cross-platform React Native date picker and calendar component for iOS and Android. 
 
 This package is designed to integrade common date components like `calendars`, `date`, `date-time`, etc. Next, we are gonna provide more optional parameters and styles for developers who like this package. We hope to make it high-performance and high-efficiency in the future.
