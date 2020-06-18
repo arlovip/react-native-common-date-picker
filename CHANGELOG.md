@@ -1,5 +1,10 @@
 # Change Log
 
+## 2.1.0（June 18, 2020）
+
+- Optimize business logic 
+- Fix List linkage causing imprecise selected row
+
 ## 2.0.4（June 17, 2020）
 
 - Fix bug: not change text color for the selected row sometimes

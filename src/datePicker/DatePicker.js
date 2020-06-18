@@ -17,7 +17,7 @@ class DatePicker extends Component {
         years: [],
         months: [],
         days: [],
-        isFirst: true,
+        isFirstLoad: true,
         defaultYearIndex: 0,
         defaultMonthIndex: 0,
         defaultDayIndex: 0,
@@ -50,7 +50,7 @@ class DatePicker extends Component {
             defaultYearIndex,
             defaultMonthIndex,
             defaultDayIndex,
-        }, () => this.state.isFirst = false);
+        }, () => this.state.isFirstLoad = false);
     };
 
     _getData = (index, data) => index >= 0 && data.length > index ? data[index].data : [];
@@ -126,10 +126,13 @@ class DatePicker extends Component {
             years,
             months,
             days,
-            isFirst,
+            isFirstLoad,
             selectedYear,
             selectedMonth,
             selectedDay,
+            defaultYearIndex,
+            defaultMonthIndex,
+            defaultDayIndex,
         } = this.state;
         const dataSource = Constants.getDatePickerDataSource(type, years, months, days);
 
@@ -158,14 +161,14 @@ class DatePicker extends Component {
                     {
                         dataSource.map((item, index) => {
                             const {key, data} = item;
-                            const initIndex = key === Constants.DATE_KEY_TYPE.YEAR ? this.state.defaultYearIndex : (key === Constants.DATE_KEY_TYPE.MONTH ? this.state.defaultMonthIndex : this.state.defaultDayIndex);
+                            const initialScrollIndex = key === Constants.DATE_KEY_TYPE.YEAR ? defaultYearIndex : (key === Constants.DATE_KEY_TYPE.MONTH ? defaultMonthIndex : defaultDayIndex);
                             return (<DatePickerList
                                 key={index}
-                                keyType={key}
                                 dataIndex={index}
-                                initIndex={initIndex}
-                                isFirst={isFirst}
                                 dataLength={dataSource.length}
+                                isFirstLoad={isFirstLoad}
+                                keyType={key}
+                                initialScrollIndex={initialScrollIndex}
                                 width={this._getWidth()}
                                 data={data}
                                 rows={rows}
@@ -311,7 +314,7 @@ DatePicker.propTypes = {
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 
     /**
-     * Row number for date picker. Default is 5. Note that Only one of [5, 7] is supported up to now. E.g: rows={7} or rows={'7'}.
+     * Row number for date picker. Default is 5. Note that Only one of [5, 7] is supported up to now. E.g: rows={5} or rows={7}.
      */
     rows: PropTypes.oneOf([5, 7]),
 

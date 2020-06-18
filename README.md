@@ -53,7 +53,7 @@ Of course, you can show only month/year、year/month、year/month/day、month/da
 
 Now Calendar list and date picker are supported, you can select the type according to your needs. Besides, we are gonna support more parameters and types controlled by users. So stay tuned!
 
-#### Easy installation and usage
+##### Easy installation and usage
 
 The installation and usage is very easy and simple due to implemented by pure `JavaScript`. No `react-native link` is required. Many props and styles are completely under your control. It's up to you!
 
