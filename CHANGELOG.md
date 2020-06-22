@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.1.2（June 22, 2020）
+
+- Fix bug: error: changing viewabilityconfig on the fly is not supported
+
 ## 2.1.1（June 18, 2020）
 
 - Update README.md

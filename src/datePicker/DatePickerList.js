@@ -231,6 +231,8 @@ class DatePickerList extends Component {
         </View>);
     };
 
+    _viewabilityConfig = {viewAreaCoveragePercentThreshold: 50};
+
     render() {
         const {data, rowHeight} = this.state;
         const heightOfContainer = this.props.rows * rowHeight;
@@ -247,7 +249,7 @@ class DatePickerList extends Component {
                     getItemLayout={(data, index) => ({length: rowHeight, offset: index * rowHeight, index})}
                     keyExtractor={(item, index) => index.toString()}
                     onViewableItemsChanged={this._onViewableItemsChanged}
-                    viewabilityConfig={{itemVisiblePercentThreshold: 50}}
+                    viewabilityConfig={this._viewabilityConfig}
                     onScrollEndDrag={this._onScrollEndDrag}
                     onMomentumScrollEnd={this._onMomentumScrollEnd}
                     renderItem={this._renderItem}
