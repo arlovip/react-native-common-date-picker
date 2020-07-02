@@ -3,31 +3,19 @@ import {View} from 'react-native';
 import DatePickerList from "./DatePickerList";
 import PropTypes from "prop-types";
 import ToolBar from "../components/ToolBar";
-import * as Constants from "../contants/index";
+import * as Constants from "../contants";
 
 const ROWS = 5;
 const ROW_HEIGHT = 35;
 
 class DatePicker extends Component {
 
-    state = {
-        selectedYear: '',
-        selectedMonth: '',
-        selectedDay: '',
-        years: [],
-        months: [],
-        days: [],
-        isFirstLoad: true,
-        defaultYearIndex: 0,
-        defaultMonthIndex: 0,
-        defaultDayIndex: 0,
-    };
-
-    componentDidMount() {
-        this._loadDataSource();
+    constructor(props) {
+        super(props);
+        this.state = this._getInitialData();
     }
 
-    _loadDataSource = () => {
+    _getInitialData = () => {
         const {type, defaultDate, minDate, maxDate, monthDisplayMode} = this.props;
         const _defaultDate = defaultDate || maxDate;
         Constants.assertDate(maxDate, minDate, _defaultDate);
@@ -35,22 +23,22 @@ class DatePicker extends Component {
         const _defaultDateString = Constants.validateDate(_defaultDate);
         const _defaultDates = _defaultDateString.split('-');
         const initialSelectedDate = Constants.getDatePickerInitSelectDate(type, _defaultDates);
-        this.state.selectedYear = initialSelectedDate[0];
-        this.state.selectedMonth = initialSelectedDate[1];
-        this.state.selectedDay = initialSelectedDate[2];
         const defaultYearIndex = years.findIndex(item => item.date === +_defaultDates[0]);
         const months = this._getData(defaultYearIndex, years);
         const defaultMonthIndex = months.findIndex(item => item.date === Constants.getDatePickerMonth(monthDisplayMode, +_defaultDates[1]));
         const days = this._getData(defaultMonthIndex, months);
         const defaultDayIndex = days.findIndex(item => item.date === +_defaultDates[2]);
-        this.setState({
+        return {
             years,
             months,
             days,
             defaultYearIndex,
             defaultMonthIndex,
             defaultDayIndex,
-        }, () => this.state.isFirstLoad = false);
+            selectedYear: initialSelectedDate[0],
+            selectedMonth: initialSelectedDate[1],
+            selectedDay: initialSelectedDate[2],
+        };
     };
 
     _getData = (index, data) => index >= 0 && data.length > index ? data[index].data : [];
@@ -126,7 +114,6 @@ class DatePicker extends Component {
             years,
             months,
             days,
-            isFirstLoad,
             selectedYear,
             selectedMonth,
             selectedDay,
@@ -166,7 +153,6 @@ class DatePicker extends Component {
                                 key={index}
                                 dataIndex={index}
                                 dataLength={dataSource.length}
-                                isFirstLoad={isFirstLoad}
                                 keyType={key}
                                 initialScrollIndex={initialScrollIndex}
                                 width={this._getWidth()}

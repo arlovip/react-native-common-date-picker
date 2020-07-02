@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.1.3（June 22, 2020）
+
+- Update: optimize initial load and improve performance for DatePicker
+
 ## 2.1.2（June 22, 2020）
 
 - Fix bug: error: changing viewabilityconfig on the fly is not supported

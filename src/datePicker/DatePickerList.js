@@ -6,7 +6,6 @@ import {BORDER_LINE_POSITION, DATE_KEY_TYPE} from '../contants'
 class DatePickerList extends Component {
 
     static propTypes = {
-        isFirstLoad: PropTypes.bool,
         keyType: PropTypes.string,
         initialScrollIndex: PropTypes.number,
         width: PropTypes.number.isRequired,
@@ -67,12 +66,10 @@ class DatePickerList extends Component {
                 const maxSelectedIndex = data.length - 1 - initialRow;
                 const maxScrollIndex = data.length - this.props.rows;
                 const index = selectedIndex > maxSelectedIndex ? maxScrollIndex : (selectedIndex - initialRow);
-                if (!this.props.isFirstLoad) {
-                    this.updating = true;
-                    this._scrollToIndex(index);
-                    this._removeUpdatingTimer();
-                    this.updatingTimer = setTimeout(() => this.updating = false, 200);
-                }
+                this.updating = true;
+                this._scrollToIndex(index);
+                this._removeUpdatingTimer();
+                this.updatingTimer = setTimeout(() => this.updating = false, 200);
             });
         }
     }
@@ -137,9 +134,14 @@ class DatePickerList extends Component {
 
     _onViewableItemsChanged = ({viewableItems}) => {
         this._removeTimer();
-        const {initialRow} = this.state;
+        const {data, initialRow, selectedIndex} = this.state;
         if (viewableItems.length >= initialRow && viewableItems[initialRow] && viewableItems[initialRow].index >= 0 && !this.updating) {
-            this.setState({selectedIndex: viewableItems[initialRow].index});
+            const maxSelectedIndex = data.length - 1 - initialRow;
+            if (viewableItems[initialRow].index >= maxSelectedIndex) {
+                this.setState({selectedIndex: maxSelectedIndex});
+            } else {
+                this.setState({selectedIndex: viewableItems[initialRow].index});
+            }
         }
     };
 
