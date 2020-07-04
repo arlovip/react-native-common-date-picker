@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
-import {BORDER_LINE_POSITION, DATE_KEY_TYPE} from '../contants'
+import styles from './style';
+import {BORDER_LINE_POSITION, DATE_KEY_TYPE} from '../contants';
 
 class DatePickerList extends Component {
 
@@ -46,16 +47,16 @@ class DatePickerList extends Component {
         super(props);
         const {rows, rowHeight, selectedBorderLineMarginHorizontal, textMarginHorizontal} = props;
         __DEV__ && (rows !== 5 && rows !== 7) && console.error('Oops! Rows is only supported by one of [5, 7]');
+        const initialRow = (rows - 1) / 2;
         this.state = {
             data: this._getData(),
-            initialRow: (rows - 1) / 2,
-            selectedIndex: (rows - 1) / 2,
+            initialRow,
+            selectedIndex: initialRow,
             isScrolling: false,
             rowHeight: +rowHeight,
             selectedBorderLineMarginHorizontal: +selectedBorderLineMarginHorizontal,
             textMarginHorizontal: +textMarginHorizontal,
         };
-        this.updating = false;
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -63,20 +64,16 @@ class DatePickerList extends Component {
             const data = this._getData();
             this.setState({data}, () => {
                 const {selectedIndex, initialRow} = this.state;
-                const maxSelectedIndex = data.length - 1 - initialRow;
-                const maxScrollIndex = data.length - this.props.rows;
-                const index = selectedIndex > maxSelectedIndex ? maxScrollIndex : (selectedIndex - initialRow);
-                this.updating = true;
+                const {maxScrollIndex, maxSelectedIndex} = this._maxIndex();
+                const previousScrollIndex = selectedIndex - initialRow;
+                const index = selectedIndex > maxSelectedIndex ? maxScrollIndex : previousScrollIndex;
                 this._scrollToIndex(index);
-                this._removeUpdatingTimer();
-                this.updatingTimer = setTimeout(() => this.updating = false, 200);
             });
         }
     }
 
     componentWillUnmount() {
         this._removeTimer();
-        this._removeUpdatingTimer();
     }
 
     _getData = () => {
@@ -90,60 +87,48 @@ class DatePickerList extends Component {
         return dataSource;
     };
 
-    _scrollToSelectedDate = ({contentOffset}) => {
-        let offsetY = contentOffset.y;
+    _maxIndex = () => {
+        const {rows} = this.props;
+        const {data, initialRow} = this.state;
+        const length = data.length;
+        const maxScrollIndex = length - rows;
+        const maxSelectedIndex = length - 1 - initialRow;
+        return {maxScrollIndex, maxSelectedIndex};
+    };
+
+    _scrollEnd = ({contentOffset}) => {
+        const y = contentOffset.y;
         const {data, rowHeight} = this.state;
-        const maxOffsetHeight = (data.length - this.props.rows) * rowHeight;
-        if (offsetY <= 0) {
-            offsetY = 0;
-        } else if (offsetY >= maxOffsetHeight) {
-            offsetY = maxOffsetHeight;
-        }
+        const {maxScrollIndex} = this._maxIndex();
+        const maxOffsetY = maxScrollIndex * rowHeight;
+        const offsetY = y < 0 ? 0 : Math.min(maxOffsetY, y);
         const index = Math.round(offsetY / rowHeight);
         this._scrollToIndex(index);
     };
 
     _scrollToIndex = index => {
-        const {rows, onValueChange} = this.props;
-        const {initialRow, data} = this.state;
-        const maxScrollIndex = data.length - rows;
-        const _index = index < 0 ? 0 : (index > maxScrollIndex ? maxScrollIndex : index);
-        const selectedIndex = _index + initialRow;
-        this.setState({selectedIndex});
-        this.flatList.scrollToIndex({index: _index, animated: false});
-        onValueChange && typeof onValueChange === 'function' && onValueChange(_index);
+        this.props.onValueChange(index);
+        this.flatList.scrollToIndex({index, animated: false});
     };
 
     _removeTimer = () => this.timer && clearTimeout(this.timer);
-    _removeUpdatingTimer = () => this.updatingTimer && clearTimeout(this.updatingTimer);
 
-    _onMomentumScrollEnd = ({nativeEvent}) => this._scrollToSelectedDate(nativeEvent);
+    _onMomentumScrollEnd = ({nativeEvent}) => this._scrollEnd(nativeEvent);
 
     _onScrollEndDrag = ({nativeEvent}) => {
         this._removeTimer();
         /**
          * When user is scrolling the scroll view fast, this method will be executed first. After this method is executed,
-         * "_onMomentumScrollEnd" method will be triggered and go on calling "_scrollToSelectedDate". So this.timer here
+         * "_onMomentumScrollEnd" method will be triggered and go on calling "_scrollEnd". So this.timer here
          * to avoid conflict between them.
          */
         this.timer = setTimeout(() => {
-            this._scrollToSelectedDate(nativeEvent);
+            this._scrollEnd(nativeEvent);
             this._removeTimer();
         }, 150);
     };
 
-    _onViewableItemsChanged = ({viewableItems}) => {
-        this._removeTimer();
-        const {data, initialRow, selectedIndex} = this.state;
-        if (viewableItems.length >= initialRow && viewableItems[initialRow] && viewableItems[initialRow].index >= 0 && !this.updating) {
-            const maxSelectedIndex = data.length - 1 - initialRow;
-            if (viewableItems[initialRow].index >= maxSelectedIndex) {
-                this.setState({selectedIndex: maxSelectedIndex});
-            } else {
-                this.setState({selectedIndex: viewableItems[initialRow].index});
-            }
-        }
-    };
+    _onViewableItemsChanged = ({viewableItems}) => this._removeTimer();
 
     _getFlatListStyle = () => {
         const {textMarginHorizontal} = this.state;
@@ -225,19 +210,27 @@ class DatePickerList extends Component {
         };
     };
 
+    _onScroll = ({nativeEvent}) => {
+        const {rowHeight, initialRow} = this.state;
+        const offsetY = nativeEvent.contentOffset.y;
+        const {maxSelectedIndex} = this._maxIndex();
+        const selectedIndex = offsetY <= 0 ? initialRow : (Math.round(offsetY / rowHeight) + initialRow);
+        this.setState({selectedIndex: Math.min(selectedIndex, maxSelectedIndex)});
+    };
+
     _renderItem = ({item, index}) => {
         const {keyType, yearSuffix, monthSuffix, daySuffix} = this.props;
         const suffix = keyType === DATE_KEY_TYPE.YEAR ? yearSuffix : (keyType === DATE_KEY_TYPE.MONTH ? monthSuffix : daySuffix);
-        return (<View style={[styles.itemView, {height: this.state.rowHeight}]}>
-            <Text style={this._itemTextStyle(index)}>{item.date}{item.date ? suffix : ''}</Text>
+        return (<View style={[styles.datePickerListItemView, {height: this.state.rowHeight}]}>
+            <Text style={this._itemTextStyle(index)}>{item.date}{!item.date || suffix}</Text>
         </View>);
     };
 
-    _viewabilityConfig = {viewAreaCoveragePercentThreshold: 50};
-
     render() {
-        const {data, rowHeight} = this.state;
-        const heightOfContainer = this.props.rows * rowHeight;
+        const {rows, initialScrollIndex} = this.props;
+        const {data, rowHeight, initialRow} = this.state;
+        const heightOfContainer = rows * rowHeight;
+        const {maxScrollIndex} = this._maxIndex();
         return (
             <View style={{height: heightOfContainer}}>
                 <View pointerEvents={'box-none'} style={this._lineStyle(BORDER_LINE_POSITION.TOP)}/>
@@ -247,14 +240,14 @@ class DatePickerList extends Component {
                     ref={ref => this.flatList = ref}
                     style={this._getFlatListStyle()}
                     data={data}
-                    initialScrollIndex={this.props.initialScrollIndex}
+                    initialScrollIndex={Math.min(initialScrollIndex, maxScrollIndex)}
                     getItemLayout={(data, index) => ({length: rowHeight, offset: index * rowHeight, index})}
                     keyExtractor={(item, index) => index.toString()}
                     onViewableItemsChanged={this._onViewableItemsChanged}
-                    viewabilityConfig={this._viewabilityConfig}
                     onScrollEndDrag={this._onScrollEndDrag}
                     onMomentumScrollEnd={this._onMomentumScrollEnd}
                     renderItem={this._renderItem}
+                    onScroll={this._onScroll}
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                     scrollsToTop={false}
@@ -264,12 +257,5 @@ class DatePickerList extends Component {
     }
 
 }
-
-const styles = StyleSheet.create({
-    itemView: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-});
 
 export default DatePickerList;

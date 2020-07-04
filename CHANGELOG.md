@@ -1,12 +1,12 @@
 # Change Log
 
-## 2.1.3（June 22, 2020）
+## 2.2.0（July 5, 2020）
+
+- Fix rendering for selected row on Android and improve performance for DatePicker
+
+## 2.1.3（July 3, 2020）
 
 - Update: optimize initial load and improve performance for DatePicker
-
-## 2.1.2（June 22, 2020）
-
-- Fix bug: error: changing viewabilityconfig on the fly is not supported
 
 ## 2.1.1（June 18, 2020）
 

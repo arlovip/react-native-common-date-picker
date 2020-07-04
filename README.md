@@ -43,21 +43,21 @@ If you like it, just give stars ⭐️⭐️⭐️. If you come to any problems 
 
 ## <span id="Features">Features</span>
 
-##### Uniform style(`iOS`&`Android`)
+#### Uniform style(`iOS`&`Android`)
 
 For [DatePickerIOS](https://reactnative.dev/docs/datepickerios) and [DatePickerAndroid](https://reactnative.dev/docs/datepickerandroid) provided by the official(now Deprecated, Use [@react-native-community/datetimepicker](https://github.com/react-native-community/datetimepicker) instead) are implemented in different ways, which causes a lot of frustration among developers. For cross-platform, we all hope it to be unified on ios and Android.
 
-##### Multiple date types
+#### Multiple date types
 
 Of course, you can show only month/year、year/month、year/month/day、month/day/year via `type` parameter, etc.  It's compeltely customized by yourself.
 
-##### Calendar list and date picker supported
+#### Calendar list and date picker supported
 
 Now Calendar list and date picker are supported, you can select the type according to your needs. Besides, we are gonna support more parameters and types controlled by users. So stay tuned!
 
-##### Easy installation and usage
+#### Easy installation and usage
 
-The installation and usage is very easy and simple due to implemented by pure `JavaScript`. No `react-native link` is required. Many props and styles are completely under your control. It's up to you!
+The installation and usage are very easy and simple due to being implemented by pure `JavaScript`. No `react-native link` is required. Many props and styles are completely under your control. It's up to you! Above all, all `React Native` versions are supported!
 
 ## <span id="Installation">Installation</span>
 

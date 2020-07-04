@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
-import DatePickerList from "./DatePickerList";
-import PropTypes from "prop-types";
-import ToolBar from "../components/ToolBar";
-import * as Constants from "../contants";
+import DatePickerList from './DatePickerList';
+import PropTypes from 'prop-types';
+import styles from './style';
+import ToolBar from '../components/ToolBar';
+import * as Constants from '../contants';
 
 const ROWS = 5;
 const ROW_HEIGHT = 35;
@@ -12,60 +13,29 @@ class DatePicker extends Component {
 
     constructor(props) {
         super(props);
-        this.state = this._getInitialData();
+        this.state = Constants.getDatePickerInitialData(props);
     }
-
-    _getInitialData = () => {
-        const {type, defaultDate, minDate, maxDate, monthDisplayMode} = this.props;
-        const _defaultDate = defaultDate || maxDate;
-        Constants.assertDate(maxDate, minDate, _defaultDate);
-        const years = Constants.getDatePickerDates(type, monthDisplayMode, minDate, maxDate);
-        const _defaultDateString = Constants.validateDate(_defaultDate);
-        const _defaultDates = _defaultDateString.split('-');
-        const initialSelectedDate = Constants.getDatePickerInitSelectDate(type, _defaultDates);
-        const defaultYearIndex = years.findIndex(item => item.date === +_defaultDates[0]);
-        const months = this._getData(defaultYearIndex, years);
-        const defaultMonthIndex = months.findIndex(item => item.date === Constants.getDatePickerMonth(monthDisplayMode, +_defaultDates[1]));
-        const days = this._getData(defaultMonthIndex, months);
-        const defaultDayIndex = days.findIndex(item => item.date === +_defaultDates[2]);
-        return {
-            years,
-            months,
-            days,
-            defaultYearIndex,
-            defaultMonthIndex,
-            defaultDayIndex,
-            selectedYear: initialSelectedDate[0],
-            selectedMonth: initialSelectedDate[1],
-            selectedDay: initialSelectedDate[2],
-        };
-    };
-
-    _getData = (index, data) => index >= 0 && data.length > index ? data[index].data : [];
-
-    _getWidth = () => {
-        const {width, type} = this.props;
-        if (!type || typeof type !== 'string' || width > Constants.SCREEN_WIDTH) return Constants.SCREEN_WIDTH / type.split('-').length;
-        return width / type.split('-').length;
-    };
 
     _onValueChange = (key, selectedIndex) => {
         const {years, months, days} = this.state;
         switch (key) {
             case Constants.DATE_KEY_TYPE.YEAR:
+                const yearIndex = selectedIndex < 0 ? 0 : Math.min(selectedIndex, years.length - 1);
                 this.setState({
-                    months: this._getData(selectedIndex, years),
-                    selectedYear: years[selectedIndex].date,
+                    selectedYear: years[yearIndex].date,
+                    months: Constants.selectDatePickerData(yearIndex, years),
                 });
                 break;
             case Constants.DATE_KEY_TYPE.MONTH:
+                const monthIndex = selectedIndex < 0 ? 0 : Math.min(selectedIndex, months.length - 1);
                 this.setState({
-                    days: this._getData(selectedIndex, months),
-                    selectedMonth: months[selectedIndex].date,
+                    selectedMonth: months[monthIndex].date,
+                    days: Constants.selectDatePickerData(monthIndex, months),
                 });
                 break;
             case Constants.DATE_KEY_TYPE.DAY:
-                this.setState({selectedDay: days[selectedIndex].date});
+                const dayIndex = selectedIndex < 0 ? 0 : Math.min(selectedIndex, days.length - 1);
+                this.setState({selectedDay: days[dayIndex].date});
                 break;
             default:
                 break;
@@ -77,6 +47,7 @@ class DatePicker extends Component {
         const {
             type,
             backgroundColor,
+            width,
             rows,
             rowHeight,
             selectedRowBackgroundColor,
@@ -121,7 +92,8 @@ class DatePicker extends Component {
             defaultMonthIndex,
             defaultDayIndex,
         } = this.state;
-        const dataSource = Constants.getDatePickerDataSource(type, years, months, days);
+
+        const dataSource = Constants.getDatePickerData(type, years, months, days);
 
         const _toolBar = (<ToolBar
             style={[{backgroundColor}, toolBarStyle]}
@@ -132,7 +104,7 @@ class DatePicker extends Component {
             cancelText={cancelText}
             cancel={() => cancel && typeof cancel === 'function' && cancel()}
             confirm={() => {
-                let _selectedDate = `${selectedYear}-${selectedMonth}-${selectedDay}`;
+                const _selectedDate = `${selectedYear}-${selectedMonth}-${selectedDay}`;
                 const selectedDate = Constants.toStandardStringWith(_selectedDate, monthDisplayMode);
                 confirm && typeof confirm === 'function' && confirm(selectedDate);
             }}
@@ -144,21 +116,21 @@ class DatePicker extends Component {
         return (
             <>
                 {showToolBar && toolBarPosition === Constants.DEFAULT_TOOL_BAR_POSITION.TOP && _toolBar}
-                <View style={{flexDirection: 'row', backgroundColor, justifyContent: 'center'}}>
+                <View style={[styles.datePickerContainer, {backgroundColor}]}>
                     {
                         dataSource.map((item, index) => {
                             const {key, data} = item;
                             const initialScrollIndex = key === Constants.DATE_KEY_TYPE.YEAR ? defaultYearIndex : (key === Constants.DATE_KEY_TYPE.MONTH ? defaultMonthIndex : defaultDayIndex);
                             return (<DatePickerList
                                 key={index}
-                                dataIndex={index}
-                                dataLength={dataSource.length}
-                                keyType={key}
-                                initialScrollIndex={initialScrollIndex}
-                                width={this._getWidth()}
                                 data={data}
+                                dataIndex={index}
+                                keyType={key}
                                 rows={rows}
                                 rowHeight={rowHeight}
+                                dataLength={dataSource.length}
+                                initialScrollIndex={initialScrollIndex}
+                                width={Constants.datePickerListWidth(type, width)}
                                 onValueChange={selectedIndex => this._onValueChange(key, selectedIndex)}
                                 selectedRowBackgroundColor={selectedRowBackgroundColor || backgroundColor}
                                 unselectedRowBackgroundColor={unselectedRowBackgroundColor || backgroundColor}
