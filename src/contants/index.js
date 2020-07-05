@@ -14,56 +14,14 @@ export const DEFAULT_TOOL_BAR_POSITION = {
 };
 
 /** Only for Calendar */
-export const DEFAULT_WEEK_ZH = [
-    '日',
-    '一',
-    '二',
-    '三',
-    '四',
-    '五',
-    '六',
-];
+export const DEFAULT_WEEK_ZH = ['日', '一', '二', '三', '四', '五', '六'];
 
 /** Only for Calendar */
-export const DEFAULT_WEEK_EN = [
-    'Su',
-    'Mo',
-    'Tu',
-    'We',
-    'Th',
-    'Fr',
-    'Sa',
-];
+export const DEFAULT_WEEK_EN = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-export const DEFAULT_MONTH_SHORT = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-];
+export const DEFAULT_MONTH_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export const DEFAULT_MONTH_LONG = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-];
+export const DEFAULT_MONTH_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 /** Only for Calendar */
 export const DEFAULT_DATE_MARK_TYPE = {
@@ -87,7 +45,10 @@ export function getWeekDays(weeks: [string], firstDay: number): [string] {
     if (weeks === DEFAULT_WEEK_EN || weeks === DEFAULT_WEEK_ZH) {
         const temWeeks = weeks === DEFAULT_WEEK_EN ? DEFAULT_WEEK_EN : DEFAULT_WEEK_ZH;
         // Nothing changed
-        if (firstDay === 0) return temWeeks;
+        if (firstDay === 0) {
+            return temWeeks;
+        }
+
         const _pre = [];
         const _later = [];
         temWeeks.forEach((day, index) => {
@@ -207,51 +168,24 @@ export const MONTH_DISPLAY_MODE = {
     EN_LONG: 'en-long',
 };
 
-export function getDatePickerInitSelectDate(type: string, initialDefaultDates: Array) {
-    const _year = initialDefaultDates[0];
-    const _month = initialDefaultDates[1];
-    const _day = initialDefaultDates[2];
-    if (type === DATE_TYPE.YYYY_MM_DD
-        || type === DATE_TYPE.MM_DD_YYYY
-        || type === DATE_TYPE.DD_MM_YYYY
-    ) {
-        return [_year, _month, _day];
-    }
-
-    if (type === DATE_TYPE.YYYY_MM
-        || type === DATE_TYPE.MM_YYYY
-    ) {
-        return [_year, _month, ''];
-    }
-
-    if (type === DATE_TYPE.MM_DD
-        || type === DATE_TYPE.DD_MM
-    ) {
-        return ['', _month, _day];
-    }
-
-    if (type === DATE_TYPE.YYYY) return [_year, '', ''];
-
-    if (type === DATE_TYPE.MM) return ['', _month, ''];
-
-    if (type === DATE_TYPE.DD) return ['', '', _day];
-
-    return [_year, _month, _day];
+/** Only for Date Picker */
+export function selectDatePickerData(index, data) {
+    return index >= 0 && data.length > index ? data[index].data : [];
 }
 
-export function getDatePickerDataSource(type, years, months, days) {
-    const _year = {
-        key: DATE_KEY_TYPE.YEAR,
-        data: years,
-    };
-    const _month = {
-        key: DATE_KEY_TYPE.MONTH,
-        data: months,
-    };
-    const _day = {
-        key: DATE_KEY_TYPE.DAY,
-        data: days,
-    };
+/** Only for Date Picker */
+export function datePickerListWidth(type: string, width: number | string) {
+    if (!type || typeof type !== 'string' || +width > SCREEN_WIDTH) {
+        return SCREEN_WIDTH / type.split('-').length;
+    }
+    return +width / type.split('-').length;
+}
+
+/** Only for Date Picker */
+export function getDatePickerData(type, years, months, days) {
+    const _year = {key: DATE_KEY_TYPE.YEAR, data: years};
+    const _month = {key: DATE_KEY_TYPE.MONTH, data: months};
+    const _day = {key: DATE_KEY_TYPE.DAY, data: days};
     switch (type) {
         case DATE_TYPE.YYYY_MM_DD:
             return [_year, _month, _day];
@@ -287,14 +221,97 @@ export function validateDate(date: any): string {
     if (!date) {
         const errorMsg = 'minDate or maxDate are used but no value set';
         __DEV__ && console.error(errorMsg);
-        __DEV__ && console.warn(errorMsg);
         return getToday();
     }
     if (date instanceof Date) return date.toISOString().slice(0, 10);
     return date.replace(/\//g, '-');
 }
 
+/** Only for Date Picker */
+export function getDatePickerInitialData(initialProps) {
+
+    const {
+        type,
+        defaultDate,
+        minDate,
+        maxDate,
+        monthDisplayMode,
+    } = initialProps;
+
+    // If defaultDate doest not exist, default is maxDate
+    const _defaultDate = defaultDate || maxDate;
+
+    // maxDate must be greater or equal to defaultDate, then defaultDate must be greater or equal to minDate
+    assertDate(maxDate, minDate, _defaultDate);
+
+    // The default selected date for the first time
+    const _defaultDateString = validateDate(_defaultDate);
+    const _defaultDates = _defaultDateString.split('-');
+    const initialSelectedDate = getDatePickerInitSelectDate(type, _defaultDates);
+
+    // Validate whether the index is legal
+    const legalIndex = (index, data) => index < 0 ? (data.length - 1) : index;
+
+    // Years
+    const dates = constructDatePickerDates(type, monthDisplayMode, minDate, maxDate);
+    const yearIndex = dates.findIndex(item => item.date === +_defaultDates[0]);
+    const defaultYearIndex = legalIndex(yearIndex, dates);
+
+    // Months
+    const months = selectDatePickerData(defaultYearIndex, dates);
+    const monthIndex = months.findIndex(item => item.date === getDatePickerMonth(monthDisplayMode, +_defaultDates[1]));
+    const defaultMonthIndex = legalIndex(monthIndex, months);
+
+    // Days
+    const days = selectDatePickerData(defaultMonthIndex, months);
+    const dayIndex = days.findIndex(item => item.date === +_defaultDates[2]);
+    const defaultDayIndex = legalIndex(dayIndex, days);
+
+    return {
+        years: dates,
+        months,
+        days,
+        defaultYearIndex,
+        defaultMonthIndex,
+        defaultDayIndex,
+        selectedYear: initialSelectedDate[0],
+        selectedMonth: initialSelectedDate[1],
+        selectedDay: initialSelectedDate[2],
+    };
+}
+
+/** Only for Date Picker */
+function getDatePickerInitSelectDate(type: string, initialDefaultDates: Array) {
+
+    const _year = initialDefaultDates[0];
+    const _month = initialDefaultDates[1];
+    const _day = initialDefaultDates[2];
+
+    switch (type) {
+        case DATE_TYPE.YYYY_MM_DD:
+        case DATE_TYPE.MM_DD_YYYY:
+        case DATE_TYPE.DD_MM_YYYY:
+            return [_year, _month, _day];
+        case DATE_TYPE.YYYY_MM:
+        case DATE_TYPE.MM_YYYY:
+            return [_year, _month, ''];
+        case DATE_TYPE.MM_DD:
+        case DATE_TYPE.DD_MM:
+            return ['', _month, _day];
+        case DATE_TYPE.YYYY:
+            return [_year, '', ''];
+        case DATE_TYPE.MM:
+            return ['', _month, ''];
+        case DATE_TYPE.DD:
+            return ['', '', _day];
+        default:
+            return [_year, _month, _day];
+    }
+}
+
 /**
+ * Only for Date Picker
+ *
  * Construct dates according to given two dates
  * @param type A string date order
  * @param monthDisplayMode
@@ -302,14 +319,13 @@ export function validateDate(date: any): string {
  * @param endDate A string type or Date type date like '2020-06-02'
  * @returns {[]} Return a date array consists of year, month and day such as [{date: 2019, data: [{date: 6, data: [{date: 1}, {date: 2}]}].
  */
-export function getDatePickerDates(type: string, monthDisplayMode: string, startDate: any, endDate: any) {
+function constructDatePickerDates(type: string, monthDisplayMode: string, startDate: any, endDate: any) {
 
     const _startDate = validateDate(startDate);
     const _endDate = validateDate(endDate);
 
     if (!greaterThanOrEqualTo(_endDate, _startDate)) {
         __DEV__ && console.error('maxDate must be greater or equal to minDate!');
-        __DEV__ && console.warn('maxDate must be greater or equal to minDate!');
     }
 
     const startArr = _startDate.split('-');
@@ -322,7 +338,15 @@ export function getDatePickerDates(type: string, monthDisplayMode: string, start
     const endDay = +endArr[2];
     const dates = [];
 
-    checkDatePickerDateType(type, startYear, startMonth, endYear, endMonth);
+    // The year must be the same
+    if ((type === DATE_TYPE.MM_DD || type === DATE_TYPE.DD_MM || type === DATE_TYPE.MM) && startYear !== endYear) {
+        __DEV__ && console.error('For type = \'MM-DD\'、\'DD-MM\'、\'MM\', the same year for minDate and maxDate is required');
+    }
+
+    // The year and month must be the same
+    if (type === DATE_TYPE.DD && (startYear !== endYear || startMonth !== endMonth)) {
+        __DEV__ && console.error('For type = \'DD\', the year and the month for minDate and maxDate must be the same');
+    }
 
     for (let year = startYear; year <= endYear; year++) {
         const yearObj = {date: year};
@@ -385,21 +409,7 @@ export function getDatePickerDates(type: string, monthDisplayMode: string, start
     return dates;
 }
 
-function checkDatePickerDateType(type, startYear, startMonth, endYear, endMonth) {
-    if (type === DATE_TYPE.MM_DD || type === DATE_TYPE.DD_MM || type === DATE_TYPE.MM) {
-        if (startYear !== endYear) {
-            __DEV__ && console.error('For type = \'MM-DD\'、\'DD-MM\'、\'MM\', the same year for minDate and maxDate is required');
-            __DEV__ && console.warn('For type = \'MM-DD\'、\'DD-MM\'、\'MM\', the same year for minDate and maxDate is required');
-        }
-    }
-    if (type === DATE_TYPE.DD) {
-        if (startYear !== endYear || startMonth !== endMonth) {
-            __DEV__ && console.error('For type = \'DD\', the year and the month for minDate and maxDate must be the same');
-            __DEV__ && console.warn('For type = \'DD\', the year and the month for minDate and maxDate must be the same');
-        }
-    }
-}
-
+/** Only for Date Picker */
 export function getDatePickerMonth(monthDisplayMode: string, month: number) {
     if (Object.values(MONTH_DISPLAY_MODE).indexOf(monthDisplayMode) < 0) return month;
     switch (monthDisplayMode) {
@@ -415,41 +425,40 @@ export function getDatePickerMonth(monthDisplayMode: string, month: number) {
 }
 
 /**
+ * Only for Date Picker
+ *
  * Assert date parameters.
  * @param maxDate A string or Date type
  * @param minDate A string or Date type
  * @param defaultDate A string or Date type
  */
-export function assertDate(maxDate, minDate, defaultDate) {
+function assertDate(maxDate, minDate, defaultDate) {
 
     const _maxDate = validateDate(maxDate);
     const _minDate = validateDate(minDate);
     const _defaultDate = validateDate(defaultDate);
 
+    let errorMsg = '';
     if (!greaterThanOrEqualTo(_defaultDate, _minDate)) {
-        const errorMsg = `Error! defaultDate must be greater than or equal to minDate! But defaultDate: ${_defaultDate} is less than minDate: ${_minDate}`;
-        __DEV__ && console.error(errorMsg);
-        __DEV__ && console.warn(errorMsg);
+        errorMsg = `Error! defaultDate must be greater than or equal to minDate! But defaultDate: ${_defaultDate} is less than minDate: ${_minDate}`;
     }
 
     if (!greaterThanOrEqualTo(_maxDate, _defaultDate)) {
-        const errorMsg = `Error! maxDate must be greater than or equal to defaultDate! But maxDate: ${_maxDate} is less than defaultDate: ${_defaultDate}`;
-        __DEV__ && console.error(errorMsg);
-        __DEV__ && console.warn(errorMsg);
+        errorMsg = `Error! maxDate must be greater than or equal to defaultDate! But maxDate: ${_maxDate} is less than defaultDate: ${_defaultDate}`;
     }
 
     if (!greaterThanOrEqualTo(_maxDate, _minDate)) {
-        const errorMsg = `Error! maxDate must be greater than or equal to minDate! But maxDate: ${_maxDate} is less than minDate: ${_minDate}`;
-        __DEV__ && console.error(errorMsg);
-        __DEV__ && console.warn(errorMsg);
+        errorMsg = `Error! maxDate must be greater than or equal to minDate! But maxDate: ${_maxDate} is less than minDate: ${_minDate}`;
     }
 
+    __DEV__ && errorMsg && errorMsg.length && console.error(errorMsg);
 }
 
 /**
- * NOTE: Bad performance for Date.parse(startDate.replace(/-/g, '/')) < Date.parse(_d.replace(/-/g, '/')). So use the following
+ * NOTE: Bad performance for Date.parse(startDate.replace(/-/g, '/')) < Date.parse(_d.replace(/-/g, '/')). So using the following
  * comparison method can greatly improve performance. If interested, you can have a try.
- * Compare two date. If date >= another, returns true, else false.
+ *
+ * Compare two date. If date > another, returns true, else false.
  * @param date  A string type representing a date
  * @param another A string type representing a date
  * @returns {boolean}
@@ -458,16 +467,11 @@ export function greaterThan(date: string, another: string) {
     if (!date || typeof date !== 'string' || !another || typeof another !== 'string') return false;
     const dateArr = date.replace(/\//g, '-').split('-');
     const anotherArr = another.replace(/\//g, '-').split('-');
-    // year1 > year2
     if (parseInt(dateArr[0]) > parseInt(anotherArr[0])) return true;
-    // year1 = year2
     if (parseInt(dateArr[0]) === parseInt(anotherArr[0])) {
-        // month1 > month2
         if (parseInt(dateArr[1]) > parseInt(anotherArr[1])) return true;
-        // month1 = month2
         if (parseInt(dateArr[1]) === parseInt(anotherArr[1])) return parseInt(dateArr[2]) > parseInt(anotherArr[2]);  // return day1 > day2
     }
-    // year1 < year2
     return false;
 }
 

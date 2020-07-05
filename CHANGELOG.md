@@ -1,6 +1,6 @@
 # Change Log
 
-## 2.2.0（July 5, 2020）
+## 2.3.0（July 5, 2020）
 
 - Fix rendering for selected row on Android and improve performance for DatePicker
 
