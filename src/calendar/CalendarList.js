@@ -326,7 +326,7 @@ CalendarList.propTypes = {
     onPressDate: PropTypes.func,
 
     /**
-     * Min date to limit, default is "2015-01-01". Other supported formats: "2015-1-1", "2015/01/01", "2015/1/1".
+     * Min date to limit, default is "2000-01-01". Other supported formats: "2000-1-1", "2000/01/01", "2000/1/1".
      * Note: Date type is also supported.
      */
     minDate: PropTypes.oneOfType([

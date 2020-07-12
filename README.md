@@ -164,7 +164,7 @@ More examples: [example directory](https://github.com/lchenfox/react-native-comm
 | cancelDisabled                   | bool   | Whether to disable the cancel button. Default is false.    
 | confirmDisabled                   | bool  | Whether to disable the confirm button. Default is false.    
 | onPressDate                   | function   | A callback with a date parameter(like "2019-08-09") and row index when the user presses some date item.  
-| minDate                   | string or Date | Min date to limit, default is "2015-01-01". Other supported formats: "2015-1-1", "2015/01/01", "2015/1/1".  
+| minDate                   | string or Date | Min date to limit, default is "2000-01-01". Other supported formats: "2000-1-1", "2000/01/01", "2000/1/1".
 | maxDate                   | string or Date  | Max date to limit, default is today calculated by new Date(). Other supported formats: "2015-1-1", "2015/01/01", "2015/1/1".  
 | showWeeks                   | bool   | Whether to show weeks, default is true.  
 | weeks                   | Array   | Week days to show, default is from Sunday to Saturday, namely ['Su','Mo','Tu','We','Th','Fr','Sa']. Note that if you want to custom "weeks", then you have to accomplish "firstDayOnWeeks" at the same time. For example, you passed "['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']" to "weeks", you must pass 1 to "firstDayOnWeeks" equal to "firstDayOnWeeks={1}". What's more, 1 means Monday, 2 means Tuesday, ..., 0 Means Sunday.  

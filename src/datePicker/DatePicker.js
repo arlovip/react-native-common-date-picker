@@ -6,9 +6,6 @@ import styles from './style';
 import ToolBar from '../components/ToolBar';
 import * as Constants from '../contants';
 
-const ROWS = 5;
-const ROW_HEIGHT = 35;
-
 class DatePicker extends Component {
 
     constructor(props) {
@@ -18,23 +15,24 @@ class DatePicker extends Component {
 
     _onValueChange = (key, selectedIndex) => {
         const {years, months, days} = this.state;
+        const _getSelectedIndex = dates => selectedIndex < 0 ? 0 : Math.min(selectedIndex, dates.length - 1);
         switch (key) {
             case Constants.DATE_KEY_TYPE.YEAR:
-                const yearIndex = selectedIndex < 0 ? 0 : Math.min(selectedIndex, years.length - 1);
+                const yearIndex = _getSelectedIndex(years);
                 this.setState({
                     selectedYear: years[yearIndex].date,
                     months: Constants.selectDatePickerData(yearIndex, years),
                 });
                 break;
             case Constants.DATE_KEY_TYPE.MONTH:
-                const monthIndex = selectedIndex < 0 ? 0 : Math.min(selectedIndex, months.length - 1);
+                const monthIndex = _getSelectedIndex(months);
                 this.setState({
                     selectedMonth: months[monthIndex].date,
                     days: Constants.selectDatePickerData(monthIndex, months),
                 });
                 break;
             case Constants.DATE_KEY_TYPE.DAY:
-                const dayIndex = selectedIndex < 0 ? 0 : Math.min(selectedIndex, days.length - 1);
+                const dayIndex = _getSelectedIndex(days);
                 this.setState({selectedDay: days[dayIndex].date});
                 break;
             default:
@@ -355,11 +353,11 @@ DatePicker.propTypes = {
 DatePicker.defaultProps = {
     backgroundColor: 'white',
     type: 'YYYY-MM-DD',
-    minDate: '2000-1-1',
+    minDate: Constants.DEFAULT_MIN_DATE,
     maxDate: Constants.DEFAULT_MAX_DATE,
     width: Constants.SCREEN_WIDTH,
-    rows: ROWS,
-    rowHeight: ROW_HEIGHT,
+    rows: Constants.DATE_PICKER_ROWS,
+    rowHeight: Constants.DATE_PICKER_ROW_HEIGHT,
     selectedRowBackgroundColor: '',
     unselectedRowBackgroundColor: '',
     selectedBorderLineColor: '#d3d3d3',

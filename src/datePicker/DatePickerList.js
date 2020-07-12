@@ -98,7 +98,7 @@ class DatePickerList extends Component {
 
     _scrollEnd = ({contentOffset}) => {
         const y = contentOffset.y;
-        const {data, rowHeight} = this.state;
+        const {rowHeight} = this.state;
         const {maxScrollIndex} = this._maxIndex();
         const maxOffsetY = maxScrollIndex * rowHeight;
         const offsetY = y < 0 ? 0 : Math.min(maxOffsetY, y);

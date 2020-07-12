@@ -34,7 +34,7 @@ export function getWeekDay(date: string): number {
  */
 export function getDaysInMonth(year: number, month: number): number {
     if (month <= 0 || month > 12) {
-        __DEV__ && console.error('getDaysInMonth error: month should be between 1 and 12');
+        __DEV__ && console.error(`getDaysInMonth error: month should be between 1 and 12, month: ${month}`);
         return 30;
     }
     const isLeapYear = year % 4 === 0; // If year % 4 === 0, this year is leap year, otherwise common year.
