@@ -97,6 +97,7 @@ class DatePickerList extends Component {
     };
 
     _scrollEnd = ({contentOffset}) => {
+        this._removeTimer();
         const y = contentOffset.y;
         const {rowHeight} = this.state;
         const {maxScrollIndex} = this._maxIndex();
@@ -124,11 +125,8 @@ class DatePickerList extends Component {
          */
         this.timer = setTimeout(() => {
             this._scrollEnd(nativeEvent);
-            this._removeTimer();
         }, 150);
     };
-
-    _onViewableItemsChanged = ({viewableItems}) => this._removeTimer();
 
     _getFlatListStyle = () => {
         const {textMarginHorizontal} = this.state;
@@ -211,6 +209,7 @@ class DatePickerList extends Component {
     };
 
     _onScroll = ({nativeEvent}) => {
+        this._removeTimer();
         const {rowHeight, initialRow} = this.state;
         const offsetY = nativeEvent.contentOffset.y;
         const {maxSelectedIndex} = this._maxIndex();
@@ -243,7 +242,6 @@ class DatePickerList extends Component {
                     initialScrollIndex={Math.min(initialScrollIndex, maxScrollIndex)}
                     getItemLayout={(data, index) => ({length: rowHeight, offset: index * rowHeight, index})}
                     keyExtractor={(item, index) => index.toString()}
-                    onViewableItemsChanged={this._onViewableItemsChanged}
                     onScrollEndDrag={this._onScrollEndDrag}
                     onMomentumScrollEnd={this._onMomentumScrollEnd}
                     renderItem={this._renderItem}

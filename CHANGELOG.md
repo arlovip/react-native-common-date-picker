@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.3（July 15, 2020）
+
+- Fix: remove "onViewableItemsChanged" method because it will cause crash on Android release
+
 ## 2.3.2（July 12, 2020）
 
 - Update: optimization
