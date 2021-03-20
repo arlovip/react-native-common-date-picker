@@ -16,28 +16,37 @@ class DatePicker extends Component {
     _onValueChange = (key, selectedIndex) => {
         const {years, months, days} = this.state;
         const _getSelectedIndex = dates => selectedIndex < 0 ? 0 : Math.min(selectedIndex, dates.length - 1);
+
         switch (key) {
             case Constants.DATE_KEY_TYPE.YEAR:
                 const yearIndex = _getSelectedIndex(years);
                 this.setState({
                     selectedYear: years[yearIndex].date,
                     months: Constants.selectDatePickerData(yearIndex, years),
-                });
+                }, this._onValueChangeCallBack);
                 break;
             case Constants.DATE_KEY_TYPE.MONTH:
                 const monthIndex = _getSelectedIndex(months);
                 this.setState({
                     selectedMonth: months[monthIndex].date,
                     days: Constants.selectDatePickerData(monthIndex, months),
-                });
+                }, this._onValueChangeCallBack);
                 break;
             case Constants.DATE_KEY_TYPE.DAY:
                 const dayIndex = _getSelectedIndex(days);
-                this.setState({selectedDay: days[dayIndex].date});
+                this.setState({selectedDay: days[dayIndex].date}, this._onValueChangeCallBack);
                 break;
             default:
                 break;
         }
+    };
+
+    _onValueChangeCallBack = () => {
+        const {onValueChange, monthDisplayMode} = this.props;
+        const {selectedYear, selectedMonth, selectedDay} = this.state;
+        const _selectedDate = `${selectedYear}-${selectedMonth}-${selectedDay}`;
+        const selectedDate = Constants.toStandardStringWith(_selectedDate, monthDisplayMode);
+        onValueChange && typeof onValueChange === 'function' && onValueChange(selectedDate);
     };
 
     render() {
@@ -243,6 +252,15 @@ DatePicker.propTypes = {
      * Tool bar confirm button text, default is "Confirm".
      */
     confirmText: PropTypes.string,
+
+    /**
+     * On date value change callback in real time. Once you has selected the date each time, you'll get the date you selected.
+     * For example, you can set like this to get the selected date:
+     * ......
+     * onValueChange={selectedDate => console.warn(selectedDate)}
+     * ......
+     */
+    onValueChange: PropTypes.func,
 
     /**
      * Tool bar cancel button callback.

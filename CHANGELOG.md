@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.4（March 20, 2021）
+
+- Add onValueChange function for date picker
+
 ## 2.3.3（July 15, 2020）
 
 - Fix: remove "onViewableItemsChanged" method because it will cause crash on Android release

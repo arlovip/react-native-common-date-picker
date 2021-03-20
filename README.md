@@ -123,6 +123,7 @@ More examples: [example directory](https://github.com/lchenfox/react-native-comm
 | titleText                 | string  | Tool bar title text, default is "".
 | cancelText                 | string  | Tool bar cancel button text, default is "Cancel".
 | confirmText                 | string  | Tool bar confirm button text, default is "Confirm".
+| onValueChange | function | On date value change callback in real time. Once you has selected the date each time, you'll get the date you selected. For example, you can set like this to get the selected date via `onValueChange={selectedDate => console.warn(selectedDate)}`
 | cancel                 | function  | Tool bar cancel button callback.
 | confirm                 | function  | Tool bar confirm button callback with a date string like "2020-06-10".
 | cancelDisabled                 | bool  | Whether to disable the cancel button. Default is false.
