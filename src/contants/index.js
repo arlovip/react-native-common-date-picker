@@ -313,7 +313,8 @@ export function getDatePickerInitialData(initialProps) {
         defaultYearIndex,
         defaultMonthIndex,
         defaultDayIndex,
-        ...initialSelectedDate,
+        ...initialSelectedDate, 
+        isDefaultDateChanged: false,
     };
 }
 

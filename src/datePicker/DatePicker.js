@@ -13,6 +13,16 @@ class DatePicker extends Component {
         this.state = Constants.getDatePickerInitialData(props);
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.defaultDate !== nextProps.defaultDate) {
+            this.setState({ isDefaultDateChanged: true }, () => {
+                const obj = Constants.getDatePickerInitialData(nextProps);
+                this.setState(obj);
+            });
+        }
+        return true;
+    }
+
     _onValueChange = (key, selectedIndex) => {
         const {years, months, days} = this.state;
         const _getSelectedIndex = dates => selectedIndex < 0 ? 0 : Math.min(selectedIndex, dates.length - 1);
@@ -98,7 +108,10 @@ class DatePicker extends Component {
             defaultYearIndex,
             defaultMonthIndex,
             defaultDayIndex,
+            isDefaultDateChanged,
         } = this.state;
+
+        if (isDefaultDateChanged) return null;
 
         const dataSource = Constants.getDatePickerData(type, years, months, days);
 

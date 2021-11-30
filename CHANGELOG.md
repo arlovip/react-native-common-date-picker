@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.5（December 1, 2021）
+
+- Optimizition: `defaultDate` can be changed dynamically.
+
 ## 2.3.4（March 20, 2021）
 
 - Add onValueChange function for date picker
