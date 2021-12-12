@@ -1,6 +1,6 @@
 # Change Log
 
-## 2.3.6（December 9, 2021）
+## 2.3.6（December 12, 2021）
 
 `CalendarList`: 
 
