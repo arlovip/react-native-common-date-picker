@@ -200,7 +200,7 @@ class ListItem extends React.Component {
                 arrowColor={arrowColor}
                 arrowSize={arrowSize}
                 arrowAlign={arrowAlign}
-                {...this.props}
+                horizontal={horizontal}
             />
             {showWeeks && horizontal && <WeekBar
                 weeks={_weeks}

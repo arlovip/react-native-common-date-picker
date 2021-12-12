@@ -1,5 +1,5 @@
 import {Dimensions} from 'react-native';
-import {getWeekDay, getDaysInMonth, getToday} from '../utils/dateFormat';
+import {getWeekDay, getDaysInMonth, getToday, convertDateToString} from '../utils/dateFormat';
 
 export const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 export const DEFAULT_MIN_DATE = '2000-1-1';
@@ -46,8 +46,7 @@ export function validateDate(date: any): string {
         __DEV__ && console.error(errorMsg);
         return getToday();
     }
-    if (date instanceof Date) return date.toISOString().slice(0, 10);
-    return date.replace(/\//g, '-');
+    return convertDateToString(date);
 }
 
 /**
@@ -313,7 +312,7 @@ export function getDatePickerInitialData(initialProps) {
         defaultYearIndex,
         defaultMonthIndex,
         defaultDayIndex,
-        ...initialSelectedDate, 
+        ...initialSelectedDate,
         isDefaultDateChanged: false,
     };
 }
@@ -477,6 +476,32 @@ function assertDate(maxDate: string, minDate: string, defaultDate: string) {
     }
 
     __DEV__ && errorMsg && errorMsg.length && console.error(errorMsg);
+}
+
+/**
+ * Only for CalendarList.
+ * Returns a date object like {startDate: "2021-6-7", endDate: "2021-7-7"}.
+ * @param dates
+ * @returns {{endDate: string, startDate: string}}
+ */
+export function calculateCalendarDefaultDates(dates: Array) {
+
+    let startDate = '';
+    let endDate = '';
+    if (dates && Array.isArray(dates) && dates.length === 2) {
+        const sd = convertDateToString(dates[0]).split('-');
+        const ed = convertDateToString(dates[1]).split('-');
+        if (sd.length === 3 || ed.length === 3) {
+            // Remove prefix "0". For example, substitute "2021-06-07" with "2021-6-7".
+            startDate = `${+sd[0]}-${+sd[1]}-${+sd[2]}`;
+            endDate = `${+ed[0]}-${+ed[1]}-${+ed[2]}`;
+        }
+    }
+
+    return {
+        startDate,
+        endDate,
+    };
 }
 
 /**

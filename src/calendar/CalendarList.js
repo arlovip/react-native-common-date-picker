@@ -5,14 +5,22 @@ import * as Constants from "../contants";
 import WeekBar from "./components/WeekBar";
 import ToolBar from "../components/ToolBar";
 import ListItem from "./components/ListItem";
+import {calculateCalendarDefaultDates} from '../contants';
 
 class CalendarList extends Component {
 
-    state = {
-        dataSource: [],
-        startDate: '',
-        endDate: '',
-    };
+    constructor(props) {
+        super(props);
+        const {
+            startDate,
+            endDate,
+        } = calculateCalendarDefaultDates(props.defaultDates);
+        this.state = {
+            dataSource: [],
+            startDate,
+            endDate,
+        };
+    }
 
     componentDidMount() {
         const {minDate, maxDate, firstDayOnWeeks} = this.props;
@@ -24,8 +32,10 @@ class CalendarList extends Component {
     /**
      * Select date call back with date parameter.
      * @param date A date string representing the date selected such as '2020-5-11'.
+     * @param index The click index.
      */
     _selectDate = (date, index) => {
+        this.props.onPressDate(Constants.toStandardStringWith(date), index);
         const {startDate, endDate} = this.state;
         if (startDate && endDate) {
             this.setState({
@@ -43,8 +53,6 @@ class CalendarList extends Component {
         } else {
             this.setState({startDate: date});
         }
-        const {onPressDate} = this.props;
-        onPressDate && typeof onPressDate === 'function' && onPressDate(Constants.toStandardStringWith(date), index);
     };
 
     _renderItem = ({item, index}) => {
@@ -344,6 +352,21 @@ CalendarList.propTypes = {
     ]),
 
     /**
+     * The default dates for the initial selected values.
+     * Note: the count of defaultDates must be equal to 2. That is to say, you must pass two elements for it.
+     * Both string and Date type are also supported like minDate or maxDate above.
+     * For instance: defaultDates={['2015-10-10', '2020-01-01']} or defaultDates={['2015-10-10', new Date()]}.
+     * Attention! The first element must be greater than or equal to the minDate. The second element must be
+     * less than or equal to the maxDate. Or it will not work as you expected.
+     */
+    defaultDates: PropTypes.arrayOf(
+        PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.instanceOf(Date),
+        ]),
+    ),
+
+    /**
      * Whether to show weeks, default is true.
      */
     showWeeks: PropTypes.bool,
@@ -481,6 +504,8 @@ CalendarList.defaultProps = {
     cancel: () => {
     },
     confirm: () => {
+    },
+    onPressDate: () => {
     },
     cancelDisabled: false,
     confirmDisabled: false,

@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.3.6（December 9, 2021）
+
+`CalendarList`: 
+
+- Fix an issue where the day or date will be shown ahead of the actual day or date when the timezone is set to negative timezone.
+- Optimizing the performance of list rendering.
+- `onPressDate` always responds to a callback as soon as the date is clicked.
+- `defaultDates` is supported.
+
 ## 2.3.5（December 1, 2021）
 
 - Optimizition: `defaultDate` can be changed dynamically.

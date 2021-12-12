@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {listItemStyles} from "../style";
-import {Text, TouchableOpacity, View} from "react-native";
-import Arrow from "./Arrow";
-import PropTypes from "prop-types";
-import * as Constants from "../../contants";
+import {listItemStyles} from '../style';
+import {Text, TouchableOpacity, View} from 'react-native';
+import Arrow from './Arrow';
+import PropTypes from 'prop-types';
+import * as Constants from '../../contants';
 
 const ARROW_ALIGN = {
     LEFT: 'left',
@@ -13,8 +13,13 @@ const ARROW_ALIGN = {
 
 class ListItemHeader extends Component {
 
-    _headerTitle = item => {
-        const {headerTitleType} = this.props;
+    shouldComponentUpdate(nextProps, nextState) {
+        const {year, month} = this.props.item;
+        return `${year}-${month}` !== `${nextProps.item.year}-${nextProps.item.month}`;
+    }
+
+    _headerTitle = () => {
+        const {item, headerTitleType} = this.props;
         const {year, month} = item;
         const _month = month <= 9 ? `0${month}` : month;
         switch (headerTitleType) {
@@ -51,8 +56,8 @@ class ListItemHeader extends Component {
     };
 
     render() {
+
         const {
-            item,
             listItemStyle,
             hideArrow,
             arrowColor,
@@ -68,15 +73,17 @@ class ListItemHeader extends Component {
             <View style={[listItemStyles.headerTitleContainer, listItemStyle.headerTitleContainer || {}]}>
 
                 <View style={{flex: 1, alignItems: aligns[0]}}>
-                    {!hideArrow && horizontal && <TouchableOpacity
-                        style={{paddingTop: 6, paddingBottom: 4, paddingHorizontal: 15}}
-                        onPress={() => leftArrowClick && typeof leftArrowClick === 'function' && leftArrowClick()}>
-                        <Arrow color={arrowColor} size={arrowSize} direction={'left'}/>
-                    </TouchableOpacity>}
+                    {
+                        !hideArrow && horizontal && <TouchableOpacity
+                            style={{paddingTop: 6, paddingBottom: 4, paddingHorizontal: 15}}
+                            onPress={() => leftArrowClick && typeof leftArrowClick === 'function' && leftArrowClick()}>
+                            <Arrow color={arrowColor} size={arrowSize} direction={'left'}/>
+                        </TouchableOpacity>
+                    }
                 </View>
 
                 <Text style={[listItemStyles.headerTitle, listItemStyle.headerTitle || {}]}>
-                    {this._headerTitle(item)}
+                    {this._headerTitle()}
                 </Text>
 
                 <View style={{flex: 1, alignItems: aligns[1]}}>
@@ -104,6 +111,7 @@ ListItemHeader.propTypes = {
     arrowColor: PropTypes.string,
     arrowSize: PropTypes.number,
     arrowAlign: PropTypes.string,
+    horizontal: PropTypes.bool,
 };
 
 export default ListItemHeader;

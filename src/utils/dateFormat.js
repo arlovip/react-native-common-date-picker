@@ -7,6 +7,17 @@ export function getToday(): string {
 }
 
 /**
+ * Convert a date to a date string.
+ * @param date The date that will be converted.
+ * @returns {string|*} Returns a date string like "2020-06-02".
+ */
+export function convertDateToString(date: any): string {
+    if (!date) return '';
+    if (date instanceof Date) return date.toISOString().slice(0, 10);
+    return date.replace(/\//g, '-');
+}
+
+/**
  * Gets the week day for a date.
  * Why not use this way? Because this method of parsing is very inefficient with bad performance that takes lots of time to return the result.
  * """
@@ -21,7 +32,8 @@ export function getWeekDay(date: string): number {
         __DEV__ && console.error('getWeekDay function\'s parameter date format error!!!, please check your parameter');
         return 0;
     }
-    return new Date(date).getDay();
+    // Use UTC to get standard date here. If not, the day will be shown ahead of the actual day.
+    return new Date(date).getUTCDay();
 }
 
 /**
