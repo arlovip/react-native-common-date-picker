@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.7（March 19, 2022）
+
+- `DatePicker`： Fix warnings if settings other `type` like `YYYY-MM`.
+
 ## 2.3.6（December 12, 2021）
 
 `CalendarList`: 
