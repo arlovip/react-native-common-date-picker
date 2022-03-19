@@ -2,8 +2,10 @@ import {Dimensions} from 'react-native';
 import {getWeekDay, getDaysInMonth, getToday, convertDateToString} from '../utils/dateFormat';
 
 export const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
-export const DEFAULT_MIN_DATE = '2000-1-1';
-export const DEFAULT_MAX_DATE = getToday();
+export const DEFAULT_MIN_DATE = '2000-1-1default';
+export const DEFAULT_MAX_DATE = getToday() + 'default';
+export const CALENDAR_DEFAULT_MIN_DATE = '2000-1-1';
+export const CALENDAR_DEFAULT_MAX_DATE = getToday();
 
 /** Tool bar **/
 export const DEFAULT_CANCEL_TEXT = 'Cancel';
@@ -243,13 +245,15 @@ export function getDatePickerInitialData(initialProps) {
         monthDisplayMode,
     } = initialProps;
 
-    const _verifyDate = date => {
+    const _verifyDate = (date, des) => {
+        const useDefault = (typeof date === 'string' && date.indexOf('default') > 0) || (date instanceof Date);
         let aDate = date;
         if (!date) aDate = getToday();
         if (date instanceof Date) aDate = date.toISOString().slice(0, 10);
-        aDate = aDate.replace(/\//g, '-'); // Replace "/" with "-".
+        aDate = aDate.replace(/\//g, '-');     // Replace "/" with "-".
+        aDate = aDate.replace(/default/g, ''); // Replace "default" with "".
         const _y = '2000', _m = '1', _d = '1';
-        const _printError = () => console.warn(`The date type you selected is: ${type}, but has incorrect date format: ${aDate}`);
+        const _printError = () => !useDefault && console.warn(`The date type you selected is: ${type}, but ${des} has incorrect date format: ${aDate}`);
         switch (type) {
             case DATE_TYPE.YYYY:
                 __DEV__ && aDate.length !== 4 && _printError();
@@ -273,12 +277,12 @@ export function getDatePickerInitialData(initialProps) {
         }
     };
 
-    const _maxDate = _verifyDate(maxDate);
+    const _maxDate = _verifyDate(maxDate, 'maxDate');
 
     // If defaultDate doest not exist, default is maxDate
-    const _defaultDate = _verifyDate(defaultDate || maxDate);
+    const _defaultDate = _verifyDate(defaultDate || maxDate, 'defaultDate');
 
-    const _minDate = _verifyDate(minDate);
+    const _minDate = _verifyDate(minDate, 'minDate');
 
     // maxDate must be greater or equal to defaultDate, then defaultDate must be greater or equal to minDate
     assertDate(_maxDate, _minDate, _defaultDate);
