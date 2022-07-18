@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.3.8（July 19, 2022）
+
+- `DatePicker`： Add new properties `selectedTextStyle` and `unselectedTextStyle` for more custom settings.
+
 ## 2.3.7（March 19, 2022）
 
 - `DatePicker`： Fix warnings if settings other `type` like `YYYY-MM`.

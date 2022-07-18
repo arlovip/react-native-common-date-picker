@@ -33,7 +33,9 @@ class DatePickerList extends Component {
             PropTypes.number,
         ]),
         selectedTextColor: PropTypes.string,
+        selectedTextStyle: PropTypes.object,
         unselectedTextColor: PropTypes.string,
+        unselectedTextStyle: PropTypes.object,
         textMarginHorizontal: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.number,
@@ -149,16 +151,21 @@ class DatePickerList extends Component {
         const {
             selectedTextFontSize,
             selectedTextColor,
+            selectedTextStyle,
             unselectedTextColor,
+            unselectedTextStyle,
         } = this.props;
         const style = {};
         const selected = selectedIndex === index;
         if (selected) {
             style.color = selectedTextColor;
             style.fontSize = +selectedTextFontSize;
-            return style;
+            return {...style, ...selectedTextStyle};
         }
         style.color = unselectedTextColor;
+        if (unselectedTextStyle && unselectedTextStyle.fontSize) {
+            delete unselectedTextStyle.fontSize;
+        }
         if (index === selectedIndex - 1 || index === selectedIndex + 1) {
             style.fontSize = +selectedTextFontSize - 3;
         } else if (index === selectedIndex - 2 || index === selectedIndex + 2) {
@@ -166,7 +173,7 @@ class DatePickerList extends Component {
         } else {
             style.fontSize = +selectedTextFontSize - 8;
         }
-        return style;
+        return {...style, ...unselectedTextStyle};
     };
 
     _lineStyle = position => {

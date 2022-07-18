@@ -74,7 +74,9 @@ class DatePicker extends Component {
             selectedBorderLineMarginHorizontal,
             selectedTextFontSize,
             selectedTextColor,
+            selectedTextStyle,
             unselectedTextColor,
+            unselectedTextStyle,
             textMarginHorizontal,
 
             showToolBar,
@@ -159,7 +161,9 @@ class DatePicker extends Component {
                                 selectedBorderLineMarginHorizontal={selectedBorderLineMarginHorizontal}
                                 selectedTextFontSize={selectedTextFontSize}
                                 selectedTextColor={selectedTextColor}
+                                selectedTextStyle={selectedTextStyle}
                                 unselectedTextColor={unselectedTextColor}
+                                unselectedTextStyle={unselectedTextStyle}
                                 textMarginHorizontal={textMarginHorizontal}
                                 yearSuffix={yearSuffix}
                                 monthSuffix={monthSuffix}
@@ -346,9 +350,24 @@ DatePicker.propTypes = {
     selectedTextColor: PropTypes.string,
 
     /**
+     * The selected text styles. Note that if both `selectedTextStyle` and `selectedTextFontSize` are set, `selectedTextStyle`
+     * will have higher priority. For example, if selectedTextStyle={{fontSize: 15}} and selectedTextFontSize=10, then the selected
+     * font size will be 15.
+     */
+    selectedTextStyle: PropTypes.object,
+
+    /**
      * Text color for the unselected row text. Default is '#9d9d9d'.
      */
     unselectedTextColor: PropTypes.string,
+
+    /**
+     * The unselected text styles. Note that if both `unselectedTextStyle` and `unselectedTextColor` are set, `unselectedTextStyle`
+     * will have higher priority. For example, if unselectedTextStyle={{color: 'white'}} and unselectedTextColor={'black'}, then the
+     * unselected text color will be `white`. Besides, the fontSize is not supported for the unselected text, it's only determined by
+     * the selected text font size setting. For example, if you set unselectedTextStyle={{fontSize: 15}}, it won't work.
+     */
+    unselectedTextStyle: PropTypes.object,
 
     /**
      * Text margin horizontal distance to left and right. Default is 0.
@@ -396,7 +415,9 @@ DatePicker.defaultProps = {
     selectedBorderLineMarginHorizontal: 0,
     selectedTextFontSize: 22,
     selectedTextColor: 'black',
+    selectedTextStyle: {},
     unselectedTextColor: '#9d9d9d',
+    unselectedTextStyle: {},
     textMarginHorizontal: 0,
     showToolBar: true,
     toolBarPosition: Constants.DEFAULT_TOOL_BAR_POSITION.TOP,
