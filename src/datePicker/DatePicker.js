@@ -136,7 +136,7 @@ class DatePicker extends Component {
         />);
 
         return (
-            <>
+            <View>
                 {showToolBar && toolBarPosition === Constants.DEFAULT_TOOL_BAR_POSITION.TOP && _toolBar}
                 <View style={[styles.datePickerContainer, {backgroundColor}]}>
                     {
@@ -173,7 +173,7 @@ class DatePicker extends Component {
                     }
                 </View>
                 {showToolBar && toolBarPosition === Constants.DEFAULT_TOOL_BAR_POSITION.BOTTOM && _toolBar}
-            </>
+            </View>
         );
     }
 
